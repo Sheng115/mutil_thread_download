@@ -1,1 +1,2 @@
 # mutil_thread_download
+基于libcurl多线程的HTTP下载，采用模板多态方式，可拓展至FTP下载等其它下载方式。
