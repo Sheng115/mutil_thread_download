@@ -1,7 +1,8 @@
 #ifndef _UTIL_H
 #define _UTIL_H
 
-#include "dataDef.h"
+#include "DataDef.h"
+#include <map>
 
 #define FTP_DOWN 0
 

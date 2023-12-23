@@ -1,6 +1,7 @@
 #include <cstdlib>
 #include <getopt.h>
-#include "dataDef.h"
+#include "DataDef.h"
+#incldue ""
 
 static void show_usage(void)
 {
@@ -54,5 +55,8 @@ int main(int argc, char** argv)
                 break;
         }
     }
+
+    threadPool<HttpTask> *http_pool = nullptr;
+    httpTask *hTask == nullptr;
     
 }
