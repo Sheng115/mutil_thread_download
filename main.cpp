@@ -65,6 +65,11 @@ int main(int argc, char** argv)
     CThreadPool<HttpTask> *httpPool = nullptr;
     HttpTask *hTask = nullptr;
 
+#if FTP_DOWN
+    //CThreadPool<FtpTask> *ftpPool = nullptr;
+    //CFtpTask *fTask = nullptr;
+#endif
+
     std::map<int, SubHttpTask*>::iterator it;
 
     if(type == 1)
@@ -112,6 +117,11 @@ int main(int argc, char** argv)
             it++;
         }
 
+    }else if(type == 2)
+    {
+#if FTP_DOWN
+    std::cout << "[warn] please complete FTP download method!" << std::endl;
+#endif
     }else
     {
         goto PROC_END;
