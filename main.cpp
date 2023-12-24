@@ -50,6 +50,7 @@ int main(int argc, char** argv)
                 break;
             case 's':
                 seg_file_size = atol(optarg);
+                break;
             case 'h':
                 show_usage();
                 type = 4;
@@ -75,6 +76,11 @@ int main(int argc, char** argv)
     if(type == 1)
     {
         hTask = new HttpTask(url, seg_file_size);
+        if (!hTask)
+        {
+            std::cout << "[error] alloc class HttpTask failed." << std::endl;
+            goto PROC_END;
+        }
         unsigned int segNum = 0;
         long fileSize = hTask->GetDownloadFileSize(&segNum);
         if(fileSize <= 0)
@@ -111,9 +117,23 @@ int main(int argc, char** argv)
 
         std::cout << "[notice] downloading ..." << std::endl;
         it = hTask->downloadSegMap.begin();
+        int tryTimes = 0;   // 任务数满时尝试的次数
         while(it != hTask->downloadSegMap.end())
         {
-            httpPool->append((*it).second);
+            bool flag = httpPool->append((*it).second);
+            if(!flag)
+            {
+                if(tryTimes < TRY_TIMES)
+                {
+                    tryTimes++;
+                    sleep(WAIT_TIME);
+                    continue;
+                }else
+                {
+                    goto PROC_EXIT;
+                }
+
+            }
             it++;
         }
 

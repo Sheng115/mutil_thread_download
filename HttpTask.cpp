@@ -88,6 +88,10 @@ bool HttpTask::AssignSegTask()
 
     if(!isSeg){
         t = new SubHttpTask();
+        if(!t){
+            printf("[error] alloc class SubHttpTask failed!\n");
+            return false;
+        }
         t->SetParent((void*)this);
         t->startPos = 0;
         t->endPos = downloadFileSize - 1;
@@ -98,6 +102,10 @@ bool HttpTask::AssignSegTask()
         long segNum = downloadFileSize / MAX_SEG_SIZE;
         for(int i = 0; i <= segNum; i++) {
             t = new SubHttpTask();
+            if(!t){
+                printf("[error] alloc class SubHttpTask failed!\n");
+                return false;
+            }
             t->SetParent((void*)this);
             if(i < segNum){
                 t->startPos = i * MAX_SEG_SIZE;

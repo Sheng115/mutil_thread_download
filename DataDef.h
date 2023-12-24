@@ -4,6 +4,8 @@
 #define SEG_FILE_SIZE 20    // 文件开启分段下载最小阈值
 #define THREAD_NUMBER 8 // 线程数
 #define MAX_TASK_SIZE 99999 // 最大任务数
+#define TRY_TIMES 3 // 任务数满时，可以尝试等待的次数
+#define WAIT_TIME 5 // 每次等待时间（单位：秒）
 
 typedef enum
 {
