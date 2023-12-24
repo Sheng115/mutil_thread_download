@@ -264,7 +264,7 @@ void CThreadPool<T>::run()
     bool bRet;
     while (!m_stop)
     {
-        T *task = NULL;
+        T* task = nullptr;
 
         bRet = m_TaskQueueSem.wait();
         if (!bRet)
@@ -272,7 +272,7 @@ void CThreadPool<T>::run()
             // Log("");
             continue;
         }
-
+        //printf("Task Queue have member!");
         m_TaskQueuelocker.lock();
         if (m_TaskQueue.empty())
         {

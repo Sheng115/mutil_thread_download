@@ -133,7 +133,7 @@ SubHttpTask::~SubHttpTask()
 }
 
 
-size_t SubHttpTask::write_data(void* ptr, size_t size, size_t nmemb, void* userdata)
+size_t SubHttpTask::WriteData(void* ptr, size_t size, size_t nmemb, void* userdata)
 {
     SubHttpTask* t = (SubHttpTask*) userdata;
     size_t written;
@@ -172,7 +172,7 @@ bool SubHttpTask::Run()
 
     curl = curl_easy_init();
     curl_easy_setopt(curl, CURLOPT_URL, parent->downloadUrl.c_str());
-    curl_easy_setopt(curl, CURLOPT_WRITEFUNCTION, write_data);
+    curl_easy_setopt(curl, CURLOPT_WRITEFUNCTION, WriteData);
     curl_easy_setopt(curl, CURLOPT_WRITEDATA, (void*)this);
     curl_easy_setopt(curl, CURLOPT_FOLLOWLOCATION, 1L);
     curl_easy_setopt(curl, CURLOPT_MAXREDIRS, 3L);

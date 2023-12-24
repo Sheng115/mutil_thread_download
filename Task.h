@@ -12,6 +12,7 @@ public:
     //void setJobNo(int jobNo) { m_jobNo = jobNo; }   // 设置任务编号
     //char* getJobName(void) const { return m_jobName; }  // 获取任务名称
     //void setJobName(char* jobName); // 设置任务名称
+    virtual bool Run() = 0;
 private:
     //int m_jobNo;
     //char* m_jobName;

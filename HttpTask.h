@@ -45,7 +45,7 @@ public:
     bool Run();
     void SetParent(void *p) { parent = (HttpTask *)p; }
 
-    static size_t write_data(void *ptr, size_t size, size_t nmemb, void *userData);
+    static size_t WriteData(void *ptr, size_t size, size_t nmemb, void *userData);
 };
 
 #endif
