@@ -5,7 +5,7 @@ HttpTask::HttpTask()
 
 }
 
-HttpTask::HttpTask(char *url, long size);
+HttpTask::HttpTask(char *url, long size)
 {
     downloadUrl = url;
     MAX_SEG_SIZE = size * 1024 * 1024;

@@ -1,7 +1,13 @@
 #include <cstdlib>
+#include <cstdlib>
+#include <cstring>
+#include <string>
+#include <iostream>
 #include <getopt.h>
-#include "DataDef.h"
-#incldue ""
+#include <unistd.h>
+#include <pthread.h>
+#include "Util.h"
+#include "ThreadPool.h"
 
 static void show_usage(void)
 {
@@ -36,7 +42,7 @@ int main(int argc, char** argv)
                 strcpy(url, optarg);
 #endif
                 show_usage();
-                type  2;
+                type = 2;
                 break;
             case 'O':
                 show_usage();
@@ -56,7 +62,100 @@ int main(int argc, char** argv)
         }
     }
 
-    threadPool<HttpTask> *http_pool = nullptr;
-    httpTask *hTask == nullptr;
-    
+    CThreadPool<HttpTask> *httpPool = nullptr;
+    HttpTask *hTask = nullptr;
+
+    std::map<int, SubHttpTask*>::iterator it;
+
+    if(type == 1)
+    {
+        hTask = new HttpTask(url, seg_file_size);
+        unsigned int segNum = 0;
+        long fileSize = hTask->GetDownloadFileSize(&segNum);
+        if(fileSize <= 0)
+        {
+            std::cout << "[error] get file size failed! Please check url validity." << std::endl;
+            goto PROC_EXIT;
+        }
+        hTask->setWorkType(JOB_WORK_TYPE_HTTP);
+
+        threadpool_conf_t conf = {segNum, 0, 10000};
+        try
+        {
+            httpPool = new CThreadPool<HttpTask>((void*) &conf);
+        }
+        catch(...)
+        {
+            std::cout << "[error] thread pool init failed!" << std::endl;
+            goto PROC_EXIT;
+        }
+
+        if(!hTask->AssignSegTask())
+        {
+            std::cout << "[warn] assign task failed!" << std::endl;
+            httpPool->SetThreadExited();
+            goto PROC_EXIT;
+        }
+        
+        if(hTask->downloadSegMap.empty())
+        {
+            std::cout << "[warn] assign task failed!" << std::endl;
+            httpPool->SetThreadExited();
+            goto PROC_EXIT;
+        }
+
+        std::cout << "[notice] downloading ..." << std::endl;
+        it = hTask->downloadSegMap.begin();
+        while(it != hTask->downloadSegMap.end())
+        {
+            httpPool->append((*it).second);
+            it++;
+        }
+
+    }else
+    {
+        goto PROC_END;
+    }
+PROC_EXIT:
+    if(httpPool)
+    {
+        httpPool->WaitThreadsExit();
+    }
+    if(!hTask->downloadSegMap.empty())
+    {
+        it = hTask->downloadSegMap.begin();
+        while(it != hTask->downloadSegMap.end())
+        {
+            if(!((*it).second->isFinished))
+            {
+                break;
+            }
+            it++;
+        }
+        if(it == hTask->downloadSegMap.end())
+        {
+            fclose(hTask->fp);
+            printf("[notice] generate %s in the current direction\n", basename((char*)hTask->downloadFilePath.c_str()));
+            printf("[notice] download sucessfully!\n");
+        }else
+        {
+            fclose(hTask->fp);
+            remove(basename((char*)hTask->downloadFilePath.c_str()));
+            printf("[error] download failed!\n");
+        }
+    }
+    if(httpPool != nullptr)
+    {
+        delete httpPool;
+        httpPool = nullptr;
+    }
+    if(hTask != nullptr)
+    {
+        delete hTask;
+        hTask = nullptr;
+    }
+
+PROC_END:
+    printf("end!\n");
+    return 0;
 }

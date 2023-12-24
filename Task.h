@@ -16,7 +16,7 @@ private:
     //int m_jobNo;
     //char* m_jobName;
     EnumJobType m_workType;
-}
+};
 
 
 #endif

@@ -10,6 +10,8 @@
 #include <fcntl.h>
 #include <vector>
 #include <map>
+#include <cstdarg>
+#include <cstring>
 #include "DataDef.h"
 #include "Locker.h"
 #include "HttpTask.h"
@@ -35,8 +37,8 @@ private:
     unsigned int m_nMaxTaskNum; // 线程池处理最大任务数
     unsigned int m_nThreadStackSize;    // 线程池单个线程堆栈大小
     unsigned int m_nCurTaskNum; // 当前任务数
-    pthread_t *m_Threads;
-    pthread_t m_LogThr;
+    pthread_t *m_Threads;   // 指向线程数组指针
+    pthread_t m_LogThr; // 日志线程号
     std::list<T *> m_TaskQueue; // 任务存放链表
     std::list<char *> m_LogQueue;   // 日志存放链表
     locker m_TaskQueuelocker;   // 任务链表线程锁
@@ -44,7 +46,7 @@ private:
     sem m_TaskQueueSem; // 通知工作线程获取任务信号量
     sem m_LogSem;   // 通知日志线程获取日志信息信号量
     bool m_stop;    // 工作线程退出标志
-    void run(); 
+    void run(); // 执行任务
     int z_conf_check(threadpool_conf_t *conf);  // 初始化线程池配置
 };
 
@@ -228,17 +230,9 @@ void CThreadPool<T>::Log(const char *format, ...)
     struct tm *local;
     local = localtime(&now);
     sprintf(szBuffer, "%04d-%02d-%02d %02d:%02d:%02d (%s %d) %s\n", local->tm_year + 1900, local->tm_mon, local->tm_mday, local->tm_hour, local->tm_min, local->tm_sec, __FILE__, __LINE__, wzLog);
-    // int nLen = strlen(szBuffer);
     printf("%s", szBuffer);
 
     m_Loglocker.lock();
-    /*
-    if (m_LogQueue.size() > m_max_log)
-    {
-        m_Loglocker.unlock();
-        return ;
-    }
-    */
     m_LogQueue.push_back(szBuffer);
     m_Loglocker.unlock();
     m_LogSem.post();

@@ -1,6 +1,7 @@
 #ifndef _HTTP_TASK_H
 #define _HTTP_TASK_H
 
+#include <libgen.h>
 #include "Util.h"
 #include "Task.h"
 #include "Locker.h"
@@ -27,7 +28,7 @@ public:
     bool Run();
     long GetDownloadFileSize(unsigned int *segNum);
     bool AssignSegTask();
-}
+};
 
 class SubHttpTask : public HttpTask
 {
@@ -45,6 +46,6 @@ public:
     void SetParent(void *p) { parent = (HttpTask *)p; }
 
     static size_t write_data(void *ptr, size_t size, size_t nmemb, void *userData);
-}
+};
 
 #endif
