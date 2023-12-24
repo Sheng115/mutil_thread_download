@@ -8,14 +8,8 @@ class Task
 public:
     void setWorkType(EnumJobType type) { m_workType = type; } // 设置任务工作类型
     EnumJobType getWorkType() { return m_workType; }    // 获取任务工作类型
-    //int getJobNo(void) const { return m_jobNo; }    // 获取任务编号
-    //void setJobNo(int jobNo) { m_jobNo = jobNo; }   // 设置任务编号
-    //char* getJobName(void) const { return m_jobName; }  // 获取任务名称
-    //void setJobName(char* jobName); // 设置任务名称
-    virtual bool Run() = 0;
+    virtual bool Run() = 0; // 任务执行函数
 private:
-    //int m_jobNo;
-    //char* m_jobName;
     EnumJobType m_workType;
 };
 
